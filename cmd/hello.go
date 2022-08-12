@@ -50,7 +50,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	helloCmd.Flags().StringP("msg", "m", "World", "Greet to")
-	viper.BindPFlag("msg", helloCmd.Flags().Lookup("msg"))
+	mustBindToViper(helloCmd)
 }
 
 func newHelloCfg(cmd *cobra.Command) sample.HelloCfg {

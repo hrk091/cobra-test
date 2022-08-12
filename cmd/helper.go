@@ -25,17 +25,13 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
 	"runtime/debug"
 )
 
 // mustBindToViper binds given cobra flags to viper.
-func mustBindToViper(cmd *cobra.Command, flags ...string) {
-	for _, f := range flags {
-		if err := viper.BindPFlag(f, rootCmd.Flags().Lookup(f)); err != nil {
-			log.Fatal(err)
-		}
-	}
+func mustBindToViper(cmd *cobra.Command) {
+	_ = viper.BindPFlags(cmd.PersistentFlags())
+	_ = viper.BindPFlags(cmd.Flags())
 }
 
 func getVcsRevision() string {

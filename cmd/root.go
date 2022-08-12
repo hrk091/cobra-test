@@ -68,7 +68,7 @@ func init() {
 
 	rootCmd.PersistentFlags().Uint8P(FlagVerbose, "v", 0, "verbose level")
 	rootCmd.PersistentFlags().BoolP(FlagDevel, "d", false, "enable development mode")
-	//mustBindToViper(rootCmd, FlagVerbose, FlagDevel)
+	mustBindToViper(rootCmd)
 
 	rootCmd.AddCommand(helloCmd)
 	rootCmd.Version = getVcsRevision()
