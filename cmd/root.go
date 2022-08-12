@@ -26,6 +26,7 @@ import (
 	"fmt"
 	"github.com/hrk091/cobra-test/pkg/sample"
 	"os"
+	"runtime/debug"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -72,6 +73,7 @@ func init() {
 	rootCmd.PersistentFlags().BoolP("debug", "", false, "debug output")
 
 	rootCmd.AddCommand(helloCmd)
+	rootCmd.Version = getVcsRevision()
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -90,6 +92,7 @@ func initConfig() {
 		viper.SetConfigName(".cobra-test")
 	}
 
+	viper.SetEnvPrefix("SAMPLE")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
@@ -106,4 +109,14 @@ func newRootCfg(cmd *cobra.Command) sample.RootCfg {
 		Verbose: verbose,
 		Debug:   debug,
 	}
+}
+
+func getVcsRevision() string {
+	info, _ := debug.ReadBuildInfo()
+	for _, s := range info.Settings {
+		if s.Key == "vcs.revision" {
+			return s.Value
+		}
+	}
+	return ""
 }

@@ -25,6 +25,7 @@ package cmd
 import (
 	"github.com/hrk091/cobra-test/pkg/sample"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // helloCmd represents the hello command
@@ -45,13 +46,18 @@ to quickly create a Cobra application.`,
 
 func init() {
 	helloCmd.Flags().BoolP("error", "e", false, "Toggle to raise error")
+	helloCmd.Flags().StringP("msg", "m", "World", "Greet to")
+	viper.BindPFlag("msg", helloCmd.Flags().Lookup("msg"))
 }
 
 func newHelloCfg(cmd *cobra.Command) sample.HelloCfg {
+	msg := viper.GetString("msg")
 	e, _ := cmd.Flags().GetBool("error")
+	//msg, _ := cmd.Flags().GetString("msg")
 
 	return sample.HelloCfg{
 		RootCfg:    newRootCfg(cmd),
 		RaiseError: e,
+		Msg:        msg,
 	}
 }

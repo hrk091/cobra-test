@@ -30,10 +30,11 @@ type HelloCfg struct {
 	RootCfg
 
 	RaiseError bool
+	Msg        string
 }
 
 func RunHello(cfg HelloCfg) error {
-	fmt.Println("hello called")
+	fmt.Printf("Hello %s!\n", cfg.Msg)
 	if cfg.RaiseError {
 		return fmt.Errorf("error from hello")
 	}
