@@ -20,38 +20,22 @@
  * THE SOFTWARE.
  */
 
-package cmd
+package sample
 
 import (
-	"github.com/hrk091/cobra-test/pkg/sample"
-	"github.com/spf13/cobra"
+	"fmt"
 )
 
-// helloCmd represents the hello command
-var helloCmd = &cobra.Command{
-	Use:   "hello",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+type HelloCfg struct {
+	RootCfg
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		cfg := newHelloCfg(cmd)
-		cobra.CheckErr(sample.RunHello(cfg))
-	},
+	RaiseError bool
 }
 
-func init() {
-	helloCmd.Flags().BoolP("error", "e", false, "Toggle to raise error")
-}
-
-func newHelloCfg(cmd *cobra.Command) sample.HelloCfg {
-	e, _ := cmd.Flags().GetBool("error")
-
-	return sample.HelloCfg{
-		RootCfg:    newRootCfg(cmd),
-		RaiseError: e,
+func RunHello(cfg HelloCfg) error {
+	fmt.Println("hello called")
+	if cfg.RaiseError {
+		return fmt.Errorf("error from hello")
 	}
+	return nil
 }
