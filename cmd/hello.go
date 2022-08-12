@@ -48,8 +48,12 @@ to quickly create a Cobra application.`,
 	},
 }
 
+const (
+	FlagMsg = "msg"
+)
+
 func init() {
-	helloCmd.Flags().StringP("msg", "m", "World", "Greet to")
+	helloCmd.Flags().StringP(FlagMsg, "m", "World", "Greet to")
 	mustBindToViper(helloCmd)
 }
 

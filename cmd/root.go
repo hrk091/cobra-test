@@ -57,6 +57,7 @@ func Execute() {
 }
 
 const (
+	FlagConfig  = "config"
 	FlagVerbose = "verbose"
 	FlagDevel   = "devel"
 )
@@ -64,7 +65,7 @@ const (
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra-test.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, FlagConfig, "", "config file (default is $HOME/.cobra-test.yaml)")
 
 	rootCmd.PersistentFlags().Uint8P(FlagVerbose, "v", 0, "verbose level")
 	rootCmd.PersistentFlags().BoolP(FlagDevel, "d", false, "enable development mode")
