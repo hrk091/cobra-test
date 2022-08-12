@@ -23,6 +23,8 @@
 package cmd
 
 import (
+	"context"
+	"github.com/hrk091/cobra-test/pkg/logger"
 	"github.com/hrk091/cobra-test/pkg/sample"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -40,24 +42,22 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cfg := newHelloCfg(cmd)
-		cobra.CheckErr(sample.RunHello(cfg))
+		logger.Setup(cfg.Devel, cfg.Verbose)
+		ctx := logger.WithLogger(context.Background(), logger.NewLogger())
+		cobra.CheckErr(sample.RunHello(ctx, cfg))
 	},
 }
 
 func init() {
-	helloCmd.Flags().BoolP("error", "e", false, "Toggle to raise error")
 	helloCmd.Flags().StringP("msg", "m", "World", "Greet to")
 	viper.BindPFlag("msg", helloCmd.Flags().Lookup("msg"))
 }
 
 func newHelloCfg(cmd *cobra.Command) sample.HelloCfg {
 	msg := viper.GetString("msg")
-	e, _ := cmd.Flags().GetBool("error")
-	//msg, _ := cmd.Flags().GetString("msg")
 
 	return sample.HelloCfg{
-		RootCfg:    newRootCfg(cmd),
-		RaiseError: e,
-		Msg:        msg,
+		RootCfg: newRootCfg(cmd),
+		Msg:     msg,
 	}
 }

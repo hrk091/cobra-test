@@ -20,28 +20,30 @@
  * THE SOFTWARE.
  */
 
-package sample
+package cmd
 
 import (
-	"context"
-	"fmt"
-	"github.com/hrk091/cobra-test/pkg/logger"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"log"
+	"runtime/debug"
 )
 
-type HelloCfg struct {
-	RootCfg
-
-	Msg string
+// mustBindToViper binds given cobra flags to viper.
+func mustBindToViper(cmd *cobra.Command, flags ...string) {
+	for _, f := range flags {
+		if err := viper.BindPFlag(f, rootCmd.Flags().Lookup(f)); err != nil {
+			log.Fatal(err)
+		}
+	}
 }
 
-func RunHello(ctx context.Context, cfg HelloCfg) error {
-	l := logger.FromContext(ctx)
-	l.Debug("Debug level")
-	l.Info("Info level")
-	l.Warn("Warn level")
-	l.Error("Error level")
-
-	fmt.Printf("Hello %s!\n", cfg.Msg)
-
-	return nil
+func getVcsRevision() string {
+	info, _ := debug.ReadBuildInfo()
+	for _, s := range info.Settings {
+		if s.Key == "vcs.revision" {
+			return s.Value
+		}
+	}
+	return ""
 }

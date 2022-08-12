@@ -20,28 +20,29 @@
  * THE SOFTWARE.
  */
 
-package sample
+package logger_test
 
 import (
-	"context"
-	"fmt"
-	"github.com/hrk091/cobra-test/pkg/logger"
+	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap/zapcore"
+	"testing"
+
+	util "github.com/hrk091/cobra-test/pkg/logger"
 )
 
-type HelloCfg struct {
-	RootCfg
+func TestConvertLevel(t *testing.T) {
+	tests := []struct {
+		given uint8
+		want  zapcore.Level
+	}{
+		{0, zapcore.WarnLevel},
+		{1, zapcore.InfoLevel},
+		{2, zapcore.DebugLevel},
+		{3, zapcore.DebugLevel},
+	}
 
-	Msg string
-}
-
-func RunHello(ctx context.Context, cfg HelloCfg) error {
-	l := logger.FromContext(ctx)
-	l.Debug("Debug level")
-	l.Info("Info level")
-	l.Warn("Warn level")
-	l.Error("Error level")
-
-	fmt.Printf("Hello %s!\n", cfg.Msg)
-
-	return nil
+	for _, tt := range tests {
+		t.Log(util.ConvertLevel(tt.given))
+		assert.Equal(t, util.ConvertLevel(tt.given), tt.want)
+	}
 }

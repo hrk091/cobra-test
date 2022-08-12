@@ -25,11 +25,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/hrk091/cobra-test/pkg/sample"
-	"os"
-	"runtime/debug"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var cfgFile string
@@ -58,22 +56,32 @@ func Execute() {
 	}
 }
 
+const (
+	FlagVerbose = "verbose"
+	FlagDevel   = "devel"
+)
+
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra-test.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "verbose output")
-	rootCmd.PersistentFlags().BoolP("debug", "", false, "debug output")
+	rootCmd.PersistentFlags().Uint8P(FlagVerbose, "v", 0, "verbose level")
+	rootCmd.PersistentFlags().BoolP(FlagDevel, "d", false, "enable development mode")
+	//mustBindToViper(rootCmd, FlagVerbose, FlagDevel)
 
 	rootCmd.AddCommand(helloCmd)
 	rootCmd.Version = getVcsRevision()
+}
+
+func newRootCfg(cmd *cobra.Command) sample.RootCfg {
+	verbose, _ := cmd.Flags().GetUint8("verbose")
+	devel, _ := cmd.Flags().GetBool("devel")
+
+	return sample.RootCfg{
+		Verbose: verbose,
+		Devel:   devel,
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -99,24 +107,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
-}
-
-func newRootCfg(cmd *cobra.Command) sample.RootCfg {
-	verbose, _ := cmd.Flags().GetBool("verbose")
-	debug, _ := cmd.Flags().GetBool("debug")
-
-	return sample.RootCfg{
-		Verbose: verbose,
-		Debug:   debug,
-	}
-}
-
-func getVcsRevision() string {
-	info, _ := debug.ReadBuildInfo()
-	for _, s := range info.Settings {
-		if s.Key == "vcs.revision" {
-			return s.Value
-		}
-	}
-	return ""
 }

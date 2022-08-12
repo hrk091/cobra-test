@@ -23,6 +23,6 @@
 package sample
 
 type RootCfg struct {
-	Verbose bool
-	Debug   bool
+	Verbose uint8
+	Devel   bool
 }
