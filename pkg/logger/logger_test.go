@@ -23,11 +23,12 @@
 package logger_test
 
 import (
+	"context"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap/zapcore"
 	"testing"
 
-	util "github.com/hrk091/cobra-test/pkg/logger"
+	"github.com/hrk091/cobra-test/pkg/logger"
 )
 
 func TestConvertLevel(t *testing.T) {
@@ -42,7 +43,12 @@ func TestConvertLevel(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Log(util.ConvertLevel(tt.given))
-		assert.Equal(t, util.ConvertLevel(tt.given), tt.want)
+		assert.Equal(t, logger.ConvertLevel(tt.given), tt.want)
 	}
+}
+
+func TestFromContext(t *testing.T) {
+	want := logger.NewLogger()
+	ctx := logger.WithLogger(context.Background(), want)
+	assert.Equal(t, want, logger.FromContext(ctx))
 }
