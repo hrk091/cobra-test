@@ -25,6 +25,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/hrk091/cobra-test/pkg/sample"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -76,8 +77,8 @@ func init() {
 }
 
 func newRootCfg(cmd *cobra.Command) sample.RootCfg {
-	verbose, _ := cmd.Flags().GetUint8("verbose")
-	devel, _ := cmd.Flags().GetBool("devel")
+	verbose := cast.ToUint8(viper.GetUint(FlagVerbose))
+	devel := viper.GetBool(FlagDevel)
 
 	return sample.RootCfg{
 		Verbose: verbose,

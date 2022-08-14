@@ -58,7 +58,7 @@ func init() {
 }
 
 func newHelloCfg(cmd *cobra.Command) sample.HelloCfg {
-	msg := viper.GetString("msg")
+	msg := viper.GetString(FlagMsg)
 
 	return sample.HelloCfg{
 		RootCfg: newRootCfg(cmd),
